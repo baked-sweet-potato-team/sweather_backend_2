@@ -85,6 +85,7 @@ app.get('/api/users/auth',auth, (req,res) => {
   })
 }) 
 
+// 로그아웃
 app.get('/api/users/logout', auth, (req,res)=> {
   User.findOneAndUpdate({_id: req.user._id}, 
     {token: ""},
@@ -96,6 +97,7 @@ app.get('/api/users/logout', auth, (req,res)=> {
     })
 })
 
+// 수정
 app.post('/api/users/update', auth, (req,res) => {
   var body = req.body;
   var name = body.nickname;
@@ -119,6 +121,7 @@ app.post('/api/users/update', auth, (req,res) => {
     })
 })
 
+// 비번 변경
 app.post('/api/users/changepw', auth, (req,res) => {
   var password = req.body.password;
   bcrypt.genSalt(saltRounds, function (err, salt) {
@@ -141,6 +144,7 @@ app.post('/api/users/changepw', auth, (req,res) => {
   })
 })
 
+// 회원 탈퇴
 app.post('/api/users/delete', auth, (req,res) => {
   User.findOneAndDelete({_id: req.user._id},
     (err, user) => {
@@ -149,7 +153,7 @@ app.post('/api/users/delete', auth, (req,res) => {
     })
 })
 
-
+// 회원 조회
 app.get('/api/users/find', auth, (req,res) => {
   User.find({_id: req.user._id}, {"_id": 0, "nickname": 1, "gender": 1,
   "age": 1, "style": 1, "color": 1}, (err, user) => {
