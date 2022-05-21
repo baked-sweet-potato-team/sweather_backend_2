@@ -74,7 +74,7 @@ app.get('/api/users/auth',auth, (req,res) => {
     isAdmin: req.user.role === 0 ?false : true,
     isAuth: true,
     email: req.user.email,
-    name: req.user.name,
+    name: req.user.nickname,
     age: req.user.age,
     gender: req.user.gender,
     style: req.user.style,
@@ -98,7 +98,7 @@ app.get('/api/users/logout', auth, (req,res)=> {
 
 app.post('/api/users/update', auth, (req,res) => {
   var body = req.body;
-  var name = body.name;
+  var name = body.nickname;
   var age = body.age;
   var style = body.style;
   var color = body.color;
@@ -106,7 +106,7 @@ app.post('/api/users/update', auth, (req,res) => {
   User.findOneAndUpdate({_id: req.user._id}, 
     {
       $set: {
-          name: name,
+          nickname: name,
           age: age,
           style: style,
           color: color
@@ -151,7 +151,7 @@ app.post('/api/users/delete', auth, (req,res) => {
 
 
 app.get('/api/users/find', auth, (req,res) => {
-  User.find({_id: req.user._id}, {"_id": 0, "name": 1, 
+  User.find({_id: req.user._id}, {"_id": 0, "nickname": 1, "gender": 1,
   "age": 1, "style": 1, "color": 1}, (err, user) => {
     if(err) return res.status(400).send({message: "정보 찾기 실패"})
     return res.json(user)
