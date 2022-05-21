@@ -2,7 +2,10 @@ const express = require('express')
 const app = express()
 const port = 5000
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const cookieParser = require('cookie-parser');
+const config = require('./config/key');
 const {auth} = require('./middleware/auth');
 const {User} = require("./models/User");
 
@@ -16,7 +19,7 @@ app.use(cookieParser());
 const mongoose = require('mongoose');
 const req = require('express/lib/request');
 const res = require('express/lib/response');
-mongoose.connect('mongodb+srv://eunbin:mongodb1234@sweather.5eai0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+mongoose.connect(config.mongoURI)
     .then(()=>console.log('MongoDB Connected...'))
     .catch(err => console.log(err))
 
@@ -42,7 +45,7 @@ app.post('/api/users/login', (req,res) => {
     if(!user) {
       return res.json({
         loginSuccess: false,
-        message: "제공된 이메일에 해당한느 유저가 없습니다."
+        message: "제공된 이메일에 해당하는 유저가 없습니다."
       })
     }
     //요청된 이메일이 디비에 있다면 비밀번호 맞는지 확인
@@ -91,6 +94,68 @@ app.get('/api/users/logout', auth, (req,res)=> {
         success: true
       })
     })
+})
+
+app.post('/api/users/update', auth, (req,res) => {
+  var body = req.body;
+  var name = body.name;
+  var age = body.age;
+  var style = body.style;
+  var color = body.color;
+
+  User.findOneAndUpdate({_id: req.user._id}, 
+    {
+      $set: {
+          name: name,
+          age: age,
+          style: style,
+          color: color
+      }
+    }, (err, user) => {
+      if(err) return res.status(400).send(err)
+      return res.status(200).send({
+        update: true
+      })
+    })
+})
+
+app.post('/api/users/changepw', auth, (req,res) => {
+  var password = req.body.password;
+  bcrypt.genSalt(saltRounds, function (err, salt) {
+    if (err) return req.json(err) 
+    else {
+      bcrypt.hash(password, salt, function(err, hash) {
+        if (err) return req.json(err)
+        else {
+          console.log(hash)
+          //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
+          User.findOneAndUpdate({_id: req.user._id}, {password: hash},(err,user) => {
+            if(err) return res.status(400).send(err)
+            return res.status(200).send({
+              change_password: true
+            })
+          })
+        }
+      })
+    }
+  })
+})
+
+app.post('/api/users/delete', auth, (req,res) => {
+  User.findOneAndDelete({_id: req.user._id},
+    (err, user) => {
+      if(err) return res.json({delete: false, err})
+      return res.json({delete: true})
+    })
+})
+
+
+app.get('/api/users/find', auth, (req,res) => {
+  User.find({_id: req.user._id}, {"_id": 0, "name": 1, 
+  "age": 1, "style": 1, "color": 1}, (err, user) => {
+    if(err) return res.status(400).send({message: "정보 찾기 실패"})
+    return res.json(user)
+  })
 })
 
 app.listen(port, () => {
