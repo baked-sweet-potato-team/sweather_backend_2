@@ -239,6 +239,10 @@ app.post('/api/main/weather', auth, (req, res) => {
   })
 })
 
+app.post('api/main/personal', auth, (req,res) => {
+
+})
+
 app.post('api/personal/diagnostic', auth, (req,res) => {
   
 })
