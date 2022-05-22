@@ -158,6 +158,91 @@ app.get('/api/users/find', auth, (req,res) => {
   })
 })
 
+app.post('/api/main/weather', auth, (req, res) => {
+  User.findOne({_id: req.user._id}, (err, user) => {
+    if (err) return res.status(400).send({message: "없는 아이디"})
+    var gender = req.user.gender;
+    var style = req.user.style;
+    var weather = req.body.weather;
+    var image = "image 경로";
+    console.log(req.body);
+
+    //성별
+    if(gender == "여") {
+      //계절
+      if(weather <= 8) { //겨울
+          //스타일
+          if(style == "casual") {image = "asdf";}
+          else if(style == "basic") {image = "image path";}
+          else if(style == "lovely") {image = "image path";}
+          else if(style == "office") {image = "image path";}
+          else{return res.status(400).send("error : style not match");}
+      }
+      else if( 9<=weather && weather < 16) { //가을 
+          if(style == "casual") {image = "image path";}
+          else if(style == "basic") {image = "image path";}
+          else if(style == "lovely") {image = "image path";}
+          else if(style == "office") {image = "image path";}
+          else{return res.status(400).send("error : style not match");}
+      }
+      else if(23<=weather) { //여름
+          if(style == "casual") {image = "image path";}
+          else if(style == "basic") {image = "image path";}
+          else if(style == "lovely") {image = "image path";}
+          else if(style == "office") {image = "image path";}
+          else{return res.status(400).send("error : style not match");}
+      }
+      else if( 16<=weather && weather <23) { //봄
+          if(style == "casual") {image = "image path";}
+          else if(style == "basic") {image = "image path";}
+          else if(style == "lovely") {image = "image path";}
+          else if(style == "office") {image = "image path";}
+          else{return res.status(400).send("error : style not match");}
+      }
+      return res.status(200).send({image});
+    }
+    else if(gender =="남") {
+      if(weather <= 8) { //겨울
+          //스타일
+          if(style == "casual") {image = "image path";}
+          else if(style == "basic") {image = "image path";}
+          else if(style == "lovely") {image = "image path";}
+          else if(style == "office") {image = "image path";}
+          else{return res.status(400).send("error : style not match");}
+      }
+      else if( 9<=weather && weather < 16) { //가을 
+          if(style == "casual") {image = "image path";}
+          else if(style == "basic") {image = "image path";}
+          else if(style == "lovely") {image = "image path";}
+          else if(style == "office") {image = "image path";}
+          else{return res.status(400).send("error : style not match");}
+      }
+      else if(23<=weather) { //여름
+          if(style == "casual") {image = "image path";}
+          else if(style == "basic") {image = "image path";}
+          else if(style == "lovely") {image = "image path";}
+          else if(style == "office") {image = "image path";}
+          else{return res.status(400).send("error : style not match");}
+      }
+      else if( 16<=weather && weather <23) { //봄
+          if(style == "casual") {image = "남자 봄 캐주얼";}
+          else if(style == "basic") {image = "남자 봄 베이직";}
+          else if(style == "lovely") {image = "남자 봄 러블리";}
+          else if(style == "office") {image = "남자 봄 오피스";}
+          else{return res.status(400).send("error : style not match");}
+      }
+      return res.status(200).send({image});
+    }
+    else {
+      return res.status(400).send("error : gender not match");
+    }
+  })
+})
+
+app.post('api/personal/diagnostic', auth, (req,res) => {
+  
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
