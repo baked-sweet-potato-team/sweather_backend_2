@@ -28,7 +28,7 @@ mongoose.connect(config.mongoURI)
 app.get('/api/main', auth, (req, res) => {
   User.findOne({_id: req.user._id}, (err, user) => {
     console.log(user.token)
-    return res.json({message: "로그인 된 페이지"})
+    return res.json({isAuth: true})
   })
 
 })
@@ -255,16 +255,40 @@ app.post('/api/main/weather', auth, (req, res) => {
 //메인페이지 퍼스널컬러 옷
 app.post('api/main/personal', auth, (req,res) => {
   User.findOne({_id:req.user._id}, (err, user) => {
-
+    if(err) return res.status(400).send({personal: "회원정보 오류"})
+    var color = req.user.color;
+    if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+    else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+    else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+    else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+    else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+    else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+    else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+    else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+    else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
   })
 
 })
 
 //퍼스널컬러 진단표
 app.post('api/personal/diagnostic', auth, (req,res) => {
-  User.findOne({_id:req.user._id}, (err, user) => {
+  var color = req.body.color;
 
-  })
+  User.findOneAndUpdate({_id:req.user._id}, 
+    {color: color},
+    (err, user) => {
+      if(err) return res.status(400).send({error: "퍼스널 컬러 오류"})
+      if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+      else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+      else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+      else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+      else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+      else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+      else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+      else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+      else {return res.status(400).send({error: "컬러 입력 잘못 됨"})}
+    }
+  )
 })
 
 app.listen(port, () => {
