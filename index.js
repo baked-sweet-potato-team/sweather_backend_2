@@ -25,12 +25,21 @@ mongoose.connect(config.mongoURI)
 
 
 //메인페이지
-app.get('/api/main', auth, (req, res) => {
+app.get('/', auth, (req, res) => {
   User.findOne({_id: req.user._id}, (err, user) => {
     console.log(user.token)
-    return res.json({isAuth: true})
+    return res.json({isAuth: true, userid: user._id})
   })
+})
 
+
+// 마이페이지: 회원 조회
+app.get('/api/my', auth, (req,res) => {
+  User.find({_id: req.user._id}, {"_id": 0, "nickname": 1, "gender": 1,
+  "age": 1, "style": 1, "color": 1}, (err, user) => {
+    if(err) return res.status(400).send({message: "정보 찾기 실패"})
+    return res.json(user)
+  })
 })
 
 app.post('/api/users/register', (req, res) => {
@@ -151,23 +160,13 @@ app.post('/api/users/changepw', auth, (req,res) => {
 })
 
 // 회원 탈퇴
-app.post('/api/users/delete', auth, (req,res) => {
+app.get('/api/users/delete', auth, (req,res) => {
   User.findOneAndDelete({_id: req.user._id},
     (err, user) => {
       if(err) return res.json({delete: false, err})
       return res.json({delete: true})
     })
 })
-
-// 회원 조회
-app.get('/api/users/find', auth, (req,res) => {
-  User.find({_id: req.user._id}, {"_id": 0, "nickname": 1, "gender": 1,
-  "age": 1, "style": 1, "color": 1}, (err, user) => {
-    if(err) return res.status(400).send({message: "정보 찾기 실패"})
-    return res.json(user)
-  })
-})
-
 
 
 //메인페이지 날씨 옷
@@ -253,10 +252,12 @@ app.post('/api/main/weather', auth, (req, res) => {
 })
 
 //메인페이지 퍼스널컬러 옷
-app.post('api/main/personal', auth, (req,res) => {
+app.get('/api/main/personal', auth, (req,res) => {
   User.findOne({_id:req.user._id}, (err, user) => {
     if(err) return res.status(400).send({personal: "회원정보 오류"})
     var color = req.user.color;
+    var image = "퍼스널진단표 경로";
+
     if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
     else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
     else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
@@ -266,14 +267,17 @@ app.post('api/main/personal', auth, (req,res) => {
     else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
     else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
     else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+    return res.status(200).send({image});
   })
 
 })
 
 //퍼스널컬러 진단표
-app.post('api/personal/diagnostic', auth, (req,res) => {
+app.post('/api/personal/diagnostic', auth, (req,res) => {
   var color = req.body.color;
-
+  var image = "퍼스널진단표 경로";
+  console.log(req.body);
+  
   User.findOneAndUpdate({_id:req.user._id}, 
     {color: color},
     (err, user) => {
@@ -287,8 +291,10 @@ app.post('api/personal/diagnostic', auth, (req,res) => {
       else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
       else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
       else {return res.status(400).send({error: "컬러 입력 잘못 됨"})}
+      return res.status(200).send({image});
     }
   )
+  
 })
 
 app.listen(port, () => {
