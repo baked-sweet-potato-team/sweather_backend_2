@@ -177,7 +177,6 @@ app.post('/api/main/weather', auth, (req, res) => {
     var style = req.user.style;
     var weather = req.body.weather;
     var image = "image 경로";
-    console.log(req.body);
 
     //성별
     if(gender == "여") {
@@ -251,6 +250,136 @@ app.post('/api/main/weather', auth, (req, res) => {
   })
 })
 
+
+//메인페이지 TPO 
+//P = 친구, 애인, 가족, 직장, 첨본사람
+//O = 경사(결혼식 돌잔치 등 모두포함), 땅스포츠(트래킹, 등산 등 흙에서)
+// 물스포츠(계곡, 바다, 수영장 등 물에서), 눈스포츠(스키, 보드, 썰매, 스케이트)
+// 직장미팅(직장관련모두)
+// 데이트(연인이나 소개팅(첨본사람) 포함), 기본외출(간단한외출)
+app.post('/api/tpo', (req, res) => {
+  User.findOne({_id: req.user._id}, (err, user) => {
+    if (err) return res.status(400).send({message: "없는 아이디"})
+    var gender = req.user.gender;
+    var people = req.body.people;
+    var ocasion = req.body.ocasion;
+    var image = "image 경로";
+
+    if(gender == "여") {
+        //계절
+        if(people == "친구") { // People
+            //ocasion
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        else if(people =="가족") { // People
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        else if(people =="연인") { // People
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        else if(people =="직장") { // People
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        else if(people =="처음") { // People
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        return res.status(200).send({image});
+      }
+      else if(gender =="남") {
+        if(people == "친구") { // People
+            //ocasion
+            if(ocasion == "경사") {image = "남친구경사";}
+            else if(ocasion == "데이트") {image = "남친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        else if(people =="가족") { // People
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        else if(people =="연인") { // People
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        else if(people =="직장") { // People
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        else if(people =="처음") { // People
+            if(ocasion == "경사") {image = "여친구경사";}
+            else if(ocasion == "데이트") {image = "여친구데이트";}
+            else if(ocasion == "땅스포츠") {image = "image path";}
+            else if(ocasion == "물스포츠") {image = "image path";}
+            else if(ocasion == "눈스포츠") {image = "image path";}
+            else if(ocasion == "직장미팅") {image = "image path";}
+            else if(ocasion == "기본외출") {image = "image path";}
+            else{return res.status(400).send("error : ocasion not match");}
+        }
+        return res.status(200).send({image});
+      }
+      else {
+        return res.status(400).send("error : gender not match");
+      }
+  })
+})
+
 //메인페이지 퍼스널컬러 옷
 app.get('/api/main/personal', auth, (req,res) => {
   User.findOne({_id:req.user._id}, (err, user) => {
@@ -269,7 +398,6 @@ app.get('/api/main/personal', auth, (req,res) => {
     else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
     return res.status(200).send({image});
   })
-
 })
 
 //퍼스널컬러 진단표
