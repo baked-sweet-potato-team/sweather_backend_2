@@ -23,8 +23,14 @@ mongoose.connect(config.mongoURI)
     .then(()=>console.log('MongoDB Connected...'))
     .catch(err => console.log(err))
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+
+//메인페이지
+app.get('/api/main', auth, (req, res) => {
+  User.findOne({_id: req.user._id}, (err, user) => {
+    console.log(user.token)
+    return res.json({message: "로그인 된 페이지"})
+  })
+
 })
 
 app.post('/api/users/register', (req, res) => {
@@ -162,6 +168,9 @@ app.get('/api/users/find', auth, (req,res) => {
   })
 })
 
+
+
+//메인페이지 날씨 옷
 app.post('/api/main/weather', auth, (req, res) => {
   User.findOne({_id: req.user._id}, (err, user) => {
     if (err) return res.status(400).send({message: "없는 아이디"})
@@ -243,12 +252,19 @@ app.post('/api/main/weather', auth, (req, res) => {
   })
 })
 
+//메인페이지 퍼스널컬러 옷
 app.post('api/main/personal', auth, (req,res) => {
+  User.findOne({_id:req.user._id}, (err, user) => {
+
+  })
 
 })
 
+//퍼스널컬러 진단표
 app.post('api/personal/diagnostic', auth, (req,res) => {
-  
+  User.findOne({_id:req.user._id}, (err, user) => {
+
+  })
 })
 
 app.listen(port, () => {
