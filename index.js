@@ -257,7 +257,7 @@ app.post('/api/main/weather', auth, (req, res) => {
 // 물스포츠(계곡, 바다, 수영장 등 물에서), 눈스포츠(스키, 보드, 썰매, 스케이트)
 // 직장미팅(직장관련모두)
 // 데이트(연인이나 소개팅(첨본사람) 포함), 기본외출(간단한외출)
-app.post('/api/tpo', (req, res) => {
+app.post('/api/main/tpo', auth, (req, res) => {
   User.findOne({_id: req.user._id}, (err, user) => {
     if (err) return res.status(400).send({message: "없는 아이디"})
     var gender = req.user.gender;
