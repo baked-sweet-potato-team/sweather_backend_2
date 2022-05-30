@@ -42,6 +42,7 @@ app.get('/api/my', auth, (req,res) => {
   })
 })
 
+//회원가입
 app.post('/api/users/register', (req, res) => {
     //회원 가입 할때 필요한 정보들을 client에서 가져오면 그것들을 데베에 넣어준다.
     const user = new User(req.body)
@@ -54,6 +55,7 @@ app.post('/api/users/register', (req, res) => {
     })
 })
 
+//로그인
 app.post('/api/users/login', (req,res) => {
   //요청된 이메일을 디비에 있는지 찾는다.
   User.findOne({email: req.body.email}, (err, user) => {
@@ -82,6 +84,7 @@ app.post('/api/users/login', (req,res) => {
   })
 })
 
+//auth 확인
 app.get('/api/users/auth',auth, (req,res) => {
   //여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 true라는 말
   res.status(200).json({
@@ -168,8 +171,16 @@ app.get('/api/users/delete', auth, (req,res) => {
     })
 })
 
+/*
+app.post('/api/users/pwfind', auth, (req,res) => {
+  var email = req.body.email;
+  User.findOne()
+})
+*/
+
 
 //메인페이지 날씨 옷
+//선호 스타일: 여(로맨틱 캠퍼스 베이직 오피스), 남 (포멀 베이직 캠퍼스 스포츠)
 app.post('/api/main/weather', auth, (req, res) => {
   User.findOne({_id: req.user._id}, (err, user) => {
     if (err) return res.status(400).send({message: "없는 아이디"})
@@ -253,127 +264,431 @@ app.post('/api/main/weather', auth, (req, res) => {
 
 //메인페이지 TPO 
 //P = 친구, 애인, 가족, 직장, 첨본사람
-//O = 경사(결혼식 돌잔치 등 모두포함), 땅스포츠(트래킹, 등산 등 흙에서)
-// 물스포츠(계곡, 바다, 수영장 등 물에서), 눈스포츠(스키, 보드, 썰매, 스케이트)
-// 직장미팅(직장관련모두)
-// 데이트(연인이나 소개팅(첨본사람) 포함), 기본외출(간단한외출)
+//O = 경사(결혼식 돌잔치 등 모두포함), 운동, 직장
+// 여행(계곡, 바다, 수영장, 스키장 등 갈 때 입는 것)
+// 데이트(연인이나 소개팅(첨본사람) 포함), 데일리(기본외출, 간단한 외출)
 app.post('/api/main/tpo', auth, (req, res) => {
+  var date = new Date();
+  var nowMonth = date.getMonth()+1;
+  console.log(nowMonth)
+
   User.findOne({_id: req.user._id}, (err, user) => {
     if (err) return res.status(400).send({message: "없는 아이디"})
     var gender = req.user.gender;
     var people = req.body.people;
-    var ocasion = req.body.ocasion;
+    var occasion = req.body.occasion;
     var image = "image 경로";
 
     if(gender == "여") {
         //계절
-        if(people == "친구") { // People
-            //ocasion
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
+        if (nowMonth == 12 || nowMonth == 1 ||nowMonth == 2) {
+          if(people == "친구") { // People
+            //occasion
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="가족") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="연인") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="직장") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="처음") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else return res.status(400).send({error: "people 오류"})
+          return res.status(200).send({image});
         }
-        else if(people =="가족") { // People
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
+        else if(nowMonth == 3 || nowMonth == 4 || nowMonth ==5) {
+          if(people == "친구") { // People
+            //occasion
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="가족") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="연인") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="직장") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="처음") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else return res.status(400).send({error: "people 오류"})
+          return res.status(200).send({image});
         }
-        else if(people =="연인") { // People
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
+        else if(nowMonth == 6 || nowMonth == 7 || nowMonth ==8) {
+          if(people == "친구") { // People
+            //occasion
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="가족") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="연인") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="직장") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="처음") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else return res.status(400).send({error: "people 오류"})
+          return res.status(200).send({image});
         }
-        else if(people =="직장") { // People
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
+        else if(nowMonth == 9 || nowMonth == 10 || nowMonth == 11) {
+          if(people == "친구") { // People
+            //occasion
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="가족") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="연인") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="직장") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="처음") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else return res.status(400).send({error: "people 오류"})
+          return res.status(200).send({image});
         }
-        else if(people =="처음") { // People
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
-        }
-        return res.status(200).send({image});
+        else return res.status(400).send({error: "날짜 오류"})
       }
-      else if(gender =="남") {
-        if(people == "친구") { // People
-            //ocasion
-            if(ocasion == "경사") {image = "남친구경사";}
-            else if(ocasion == "데이트") {image = "남친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
+      
+      else if(gender == "남") {
+        //계절
+        if (nowMonth == 12 || nowMonth == 1 ||nowMonth == 2) {
+          if(people == "친구") { // People
+            //occasion
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="가족") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="연인") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="직장") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="처음") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else return res.status(400).send({error: "people 오류"})
+          return res.status(200).send({image});
         }
-        else if(people =="가족") { // People
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
+        else if(nowMonth == 3 || nowMonth == 4 || nowMonth ==5) {
+          if(people == "친구") { // People
+            //occasion
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="가족") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="연인") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="직장") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="처음") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else return res.status(400).send({error: "people 오류"})
+          return res.status(200).send({image});
         }
-        else if(people =="연인") { // People
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
+        else if(nowMonth == 6 || nowMonth == 7 || nowMonth ==8) {
+          if(people == "친구") { // People
+            //occasion
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="가족") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="연인") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="직장") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="처음") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else return res.status(400).send({error: "people 오류"})
+          return res.status(200).send({image});
         }
-        else if(people =="직장") { // People
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
+        else if(nowMonth == 9 || nowMonth == 10 || nowMonth == 11) {
+          if(people == "친구") { // People
+            //occasion
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="가족") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="연인") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="직장") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else if(people =="처음") { // People
+            if(occasion == "경사") {image = "여친구경사";}
+            else if(occasion == "데이트") {image = "여친구데이트";}
+            else if(occasion == "여행") {image = "image path";}
+            else if(occasion == "운동") {image = "image path";}
+            else if(occasion == "직장") {image = "image path";}
+            else if(occasion == "데일리") {image = "image path";}
+            else{return res.status(400).send("error : occasion not match");}
+          }
+          else return res.status(400).send({error: "people 오류"})
+          return res.status(200).send({image});
         }
-        else if(people =="처음") { // People
-            if(ocasion == "경사") {image = "여친구경사";}
-            else if(ocasion == "데이트") {image = "여친구데이트";}
-            else if(ocasion == "땅스포츠") {image = "image path";}
-            else if(ocasion == "물스포츠") {image = "image path";}
-            else if(ocasion == "눈스포츠") {image = "image path";}
-            else if(ocasion == "직장미팅") {image = "image path";}
-            else if(ocasion == "기본외출") {image = "image path";}
-            else{return res.status(400).send("error : ocasion not match");}
-        }
-        return res.status(200).send({image});
+        else return res.status(400).send({error: "날짜 오류"})
       }
+      
       else {
         return res.status(400).send("error : gender not match");
       }
@@ -381,22 +696,123 @@ app.post('/api/main/tpo', auth, (req, res) => {
 })
 
 //메인페이지 퍼스널컬러 옷
+//남,여 나누고, 계절로 나누기
 app.get('/api/main/personal', auth, (req,res) => {
+  var date = new Date();
+  var nowMonth = date.getMonth()+1;
+  console.log(nowMonth)
   User.findOne({_id:req.user._id}, (err, user) => {
     if(err) return res.status(400).send({personal: "회원정보 오류"})
     var color = req.user.color;
+    var gender = req.user.gender;
     var image = "퍼스널진단표 경로";
 
-    if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
-    else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
-    else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
-    else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
-    else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
-    else if(color == "가을 웜 딥") {image = "가을딥 경로"}
-    else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
-    else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
-    else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
-    return res.status(200).send({image});
+    if(gender == "여") 
+    {
+      if(nowMonth == 12 || nowMonth == 1 ||nowMonth == 2) {
+        if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+        else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+        else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+        else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+        else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+        else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+        else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+        else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        return res.status(200).send({image});
+      }
+      else if(nowMonth == 3 || nowMonth ==4 || nowMonth ==5) {
+        if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+        else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+        else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+        else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+        else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+        else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+        else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+        else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        return res.status(200).send({image});
+      }
+      else if (nowMonth == 6 || nowMonth == 7 || nowMonth ==8) {
+        if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+        else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+        else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+        else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+        else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+        else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+        else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+        else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        return res.status(200).send({image});
+      }
+      else if (nowMonth == 9|| nowMonth == 10 || nowMonth == 11) {
+        if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+        else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+        else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+        else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+        else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+        else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+        else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+        else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        return res.status(200).send({image});
+      }
+      else return res.status(400).send({error: "날짜 오류"})
+    }
+
+    else if(gender == "남") 
+    {
+      if(nowMonth == 12 || nowMonth == 1 ||nowMonth == 2) {
+        if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+        else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+        else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+        else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+        else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+        else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+        else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+        else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        return res.status(200).send({image});
+      }
+      else if(nowMonth == 3 || nowMonth ==4 || nowMonth ==5) {
+        if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+        else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+        else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+        else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+        else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+        else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+        else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+        else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        return res.status(200).send({image});
+      }
+      else if (nowMonth == 6 || nowMonth == 7 || nowMonth ==8) {
+        if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+        else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+        else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+        else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+        else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+        else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+        else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+        else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        return res.status(200).send({image});
+      }
+      else if (nowMonth == 9|| nowMonth == 10 || nowMonth == 11) {
+        if(color == "봄 웜 라이트") {image = "봄라이트 경로"}
+        else if(color == "봄 웜 브라이트") {image = "봄브라이트 경로"}
+        else if(color == "여름 쿨 라이트") {image = "여름라이트 경로"}
+        else if(color == "여름 쿨 뮤트") {image = "여름뮤트 경로"}
+        else if(color == "가을 웜 뮤트") {image = "가을뮤트 경로"}
+        else if(color == "가을 웜 딥") {image = "가을딥 경로"}
+        else if(color == "겨울 쿨 브라이트") {image = "겨울브라이트 경로"}
+        else if(color == "겨울 쿨 다크") {image = "겨울다크 경로"}
+        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        return res.status(200).send({image});
+      }
+      else return res.status(400).send({error: "날짜 오류"})
+    }
+    else return res.status(400).send({error: "성별 오류"})
   })
 })
 
