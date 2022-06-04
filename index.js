@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const config = require('./config/key');
 const {auth} = require('./middleware/auth');
 const {User} = require("./models/User");
-
+const fs = require('fs');
 
 //application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
@@ -40,6 +40,33 @@ app.get('/api/my', auth, (req,res) => {
     if(err) return res.status(400).send({message: "정보 찾기 실패"})
     return res.json(user)
   })
+})
+
+//마이페이지: 퍼스널컬러 진단표
+app.get('/api/my/color', auth, (req,res) => {
+  var image = "퍼스널진단표 경로";
+  
+  User.findOne({_id:req.user._id}, (err, user) => {
+      if(err) return res.status(400).send({error: "퍼스널 컬러 오류"})
+      var color = req.user.color;
+
+      if(color == "봄 웜 라이트") {image = "./views/퍼스널컬러진단/봄웜라이트.jpg"}
+      else if(color == "봄 웜 브라이트") {image = "views/퍼스널컬러진단/봄웜브라이트.jpg"}
+      else if(color == "여름 쿨 라이트") {image = "views/퍼스널컬러진단/여름쿨라이트.jpg"}
+      else if(color == "여름 쿨 뮤트") {image = "views/퍼스널컬러진단/여름쿨뮤트.jpg"}
+      else if(color == "가을 웜 뮤트") {image = "views/퍼스널컬러진단/가을웜뮤트.jpg"}
+      else if(color == "가을 웜 딥") {image = "views/퍼스널컬러진단/가을웜딥.jpg"}
+      else if(color == "겨울 쿨 브라이트") {image = "views/퍼스널컬러진단/겨울쿨브라이트.jpg"}
+      else if(color == "겨울 쿨 딥") {image = "views/퍼스널컬러진단/겨울쿨딥.jpg"}
+      else {return res.status(400).send({error: "컬러 입력 잘못 됨"})}
+      //res.end(fs.readFileSync(__dirname) +'\\index')
+      fs.readFile(image, (err,data) =>{
+        res.writeHead(200, {'content-type': 'text/html'})
+        res.end(data);
+      })
+      //return res.status(200).send({image});
+    }
+  )  
 })
 
 //회원가입
@@ -171,13 +198,52 @@ app.get('/api/users/delete', auth, (req,res) => {
     })
 })
 
-/*
+
+//비밀번호 찾기
 app.post('/api/users/pwfind', (req,res) => {
-  var email = req.body.email;
-  User.findOne()
+  User.findOne({email: req.body.email}, (err, user) => {
+    if(!user) {
+      return res.json({
+        message: "제공된 이메일에 해당하는 유저가 없습니다."
+      })
+    }
+    else {
+      var password = req.body.password;
+      bcrypt.genSalt(saltRounds, function (err, salt) {
+        if (err) return req.json(err) 
+        else {
+          bcrypt.hash(password, salt, function(err, hash) {
+            if (err) return req.json(err)
+            else {
+              console.log(hash)
+              //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
+              User.findOneAndUpdate({_id: user._id}, {password: hash},(err,user) => {
+                if(err) return res.status(400).send(err)
+                return res.status(200).send({
+                  change_password: true
+                })
+              })
+            }
+          })
+        }
+      })
+    }
+  })
+})
+
+/*
+//아이디 찾기
+app.post('/api/users/idfind', (req,res) => {
+  User.findOne({nickname: req.body.nickname}, {"_id": 0, "email": 1}, (err, user) => {
+    if(!user) {
+      return res.json({
+        message: "닉네임이 없습니다."
+      })
+    }
+    return res.json({user})
+  })
 })
 */
-
 
 //메인페이지 날씨 옷
 //선호 스타일: 여(로맨틱 캠퍼스 베이직 오피스), 남 (포멀 베이직 캠퍼스 스포츠)
@@ -196,34 +262,34 @@ app.post('/api/main/weather', auth, (req, res) => {
       //겨울
       if(weather <= 8) {
           //스타일
-          if(style == "romantic") {image = '/public/views/여자코디/겨울/여자겨울로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = '/public/views/여자코디/겨울/여자겨울빈티지' + num +'.jpg';}
-          else if(style == "campus") {image = '/public/views/여자코디/겨울/여자겨울캠퍼스' + num +'.jpg';}
-          else if(style == "office") {image = '/public/views/여자코디/겨울/여자겨울오피스' + num +'.jpg';}
+          if(style == "romantic") {image = './views/여자코디/겨울/여자겨울로맨틱' + num +'.jpg';}
+          else if(style == "basic") {image = './views/여자코디/겨울/여자겨울빈티지' + num +'.jpg';}
+          else if(style == "campus") {image = './views/여자코디/겨울/여자겨울캠퍼스' + num +'.jpg';}
+          else if(style == "office") {image = './views/여자코디/겨울/여자겨울오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //가을
       else if( 9<=weather && weather < 16) {
-          if(style == "romantic") {image = '/public/views/여자코디/가을/여자가을로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = '/public/views/여자코디/가을/여자가을베이직' + num +'.jpg';}
-          else if(style == "campus") {image = '/public/views/여자코디/가을/여자가을캠퍼스' + num +'.jpg';}
-          else if(style == "office") {image = '/public/views/여자코디/가을/여자가을오피스' + num +'.jpg';}
+          if(style == "romantic") {image = './views/여자코디/가을/여자가을로맨틱' + num +'.jpg';}
+          else if(style == "basic") {image = './views/여자코디/가을/여자가을베이직' + num +'.jpg';}
+          else if(style == "campus") {image = './views/여자코디/가을/여자가을캠퍼스' + num +'.jpg';}
+          else if(style == "office") {image = './views/여자코디/가을/여자가을오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //여름
       else if(23<=weather) { 
-          if(style == "romantic") {image = '/public/views/여자코디/여름/여자여름로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = '/public/views/여자코디/여름/여자여름베이직' + num +'.jpg';}
-          else if(style == "campus") {image = '/public/views/여자코디/여름/여자여름캠퍼스' + num +'.jpg';}
-          else if(style == "office") {image = '/public/views/여자코디/여름/여자여름오피스' + num +'.jpg';}
+          if(style == "romantic") {image = './views/여자코디/여름/여자여름로맨틱' + num +'.jpg';}
+          else if(style == "basic") {image = './views/여자코디/여름/여자여름베이직' + num +'.jpg';}
+          else if(style == "campus") {image = './views/여자코디/여름/여자여름캠퍼스' + num +'.jpg';}
+          else if(style == "office") {image = './views/여자코디/여름/여자여름오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //봄
       else if( 16<=weather && weather <23) { 
-          if(style == "romantic") {image = '/public/views/여자코디/봄/여자봄로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = '/public/views/여자코디/봄/여자봄베이직' + num +'.jpg';}
-          else if(style == "campus") {image = '/public/views/여자코디/봄/여자봄캠퍼스' + num +'.jpg';}
-          else if(style == "office") {image = '/public/views/여자코디/봄/여자봄오피스' + num +'.jpg';}
+          if(style == "romantic") {image = './views/여자코디/봄/여자봄로맨틱' + num +'.jpg';}
+          else if(style == "basic") {image = './views/여자코디/봄/여자봄베이직' + num +'.jpg';}
+          else if(style == "campus") {image = './views/여자코디/봄/여자봄캠퍼스' + num +'.jpg';}
+          else if(style == "office") {image = './views/여자코디/봄/여자봄오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       return res.status(200).send({image});
@@ -232,37 +298,41 @@ app.post('/api/main/weather', auth, (req, res) => {
       //겨울
       if(weather <= 8) {
           //스타일
-          if(style == "formal") {image = '/public/views/남자코디/겨울/남자겨울포멀' + num +'.jpg';}
-          else if(style == "basic") { image = '/public/views/남자코디/겨울/남자겨울베이직' + num +'.jpg';}
-          else if(style == "campus") {image = '/public/views/남자코디/겨울/남자겨울캠퍼스' + num +'.jpg';}
-          else if(style == "sports") {image = '/public/views/남자코디/겨울/남자겨울스포츠' + num +'.jpg';}
+          if(style == "formal") {image = './views/남자코디/겨울/남자겨울포멀' + num +'.jpg';}
+          else if(style == "basic") { image = './views/남자코디/겨울/남자겨울베이직' + num +'.jpg';}
+          else if(style == "campus") {image = './views/남자코디/겨울/남자겨울캠퍼스' + num +'.jpg';}
+          else if(style == "sports") {image = './views/남자코디/겨울/남자겨울스포츠' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //가을
       else if( 9<=weather && weather < 16) {
-          if(style == "formal") {image = '/public/views/남자코디/가을/남자가을포멀' + num +'.jpg';}
-          else if(style == "basic") { image = '/public/views/남자코디/가을/남자가을베이직' + num +'.jpg';}
-          else if(style == "campus") {image = '/public/views/남자코디/가을/남자가을캠퍼스' + num +'.jpg';}
-          else if(style == "sports") {image = '/public/views/남자코디/가을/남자가을스포츠' + num +'.jpg';}
+          if(style == "formal") {image = './views/남자코디/가을/남자가을포멀' + num +'.jpg';}
+          else if(style == "basic") { image = './views/남자코디/가을/남자가을베이직' + num +'.jpg';}
+          else if(style == "campus") {image = './views/남자코디/가을/남자가을캠퍼스' + num +'.jpg';}
+          else if(style == "sports") {image = './views/남자코디/가을/남자가을스포츠' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //여름
       else if(23<=weather) { 
-          if(style == "formal") {image = '/public/views/남자코디/여름/남자여름포멀' + num +'.jpg';}
-          else if(style == "basic") {image = '/public/views/남자코디/여름/남자여름베이직' + num +'.jpg';}
-          else if(style == "campus") {image = '/public/views/남자코디/여름/남자여름캠퍼스' + num +'.jpg';}
-          else if(style == "sports") {image = '/public/views/남자코디/여름/남자여름스포츠' + num +'.jpg';}
+          if(style == "formal") {image = './views/남자코디/여름/남자여름포멀' + num +'.jpg';}
+          else if(style == "basic") {image = './views/남자코디/여름/남자여름베이직' + num +'.jpg';}
+          else if(style == "campus") {image = './views/남자코디/여름/남자여름캠퍼스' + num +'.jpg';}
+          else if(style == "sports") {image = './views/남자코디/여름/남자여름스포츠' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //봄
       else if( 16<=weather && weather <23) {
-          if(style == "formal") {image = '/public/views/남자코디/봄/남자봄포멀' + num +'.jpg';}
-          else if(style == "basic") {image = '/public/views/남자코디/봄/남자봄베이직' + num +'.jpg';}
-          else if(style == "campus") {image = '/public/views/남자코디/봄/남자봄캠퍼스' + num +'.jpg';}
-          else if(style == "sports") {image = '/public/views/남자코디/봄/남자봄스포츠' + num +'.jpg';}
+          if(style == "formal") {image = './views/남자코디/봄/남자봄포멀' + num +'.jpg';}
+          else if(style == "basic") {image = './views/남자코디/봄/남자봄베이직' + num +'.jpg';}
+          else if(style == "campus") {image = './views/남자코디/봄/남자봄캠퍼스' + num +'.jpg';}
+          else if(style == "sports") {image = './views/남자코디/봄/남자봄스포츠' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
-      return res.status(200).send({image});
+      fs.readFile(image, (err,data) =>{
+        res.writeHead(200, {'content-type': 'text/html'})
+        res.end(data);
+      })
+      //return res.status(200).send({image});
     }
     else {
       return res.status(400).send({error : "성별 오류"});
