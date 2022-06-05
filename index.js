@@ -5,17 +5,16 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const cookieParser = require('cookie-parser');
-const config = require('config/key');
-const {auth} = require('middleware/auth');
-const {User} = require("models/User");
-const fs = require('fs');
+const config = require('./config/key');
+const {auth} = require('./middleware/auth');
+const {User} = require("./models/User");
 
 //application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
 //application/json
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(express.static('/views'));
+app.use(express.static('views'));
 
 const mongoose = require('mongoose');
 const req = require('express/lib/request');
