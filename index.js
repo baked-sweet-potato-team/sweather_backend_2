@@ -5,9 +5,9 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const cookieParser = require('cookie-parser');
-const config = require('./config/key');
-const {auth} = require('./middleware/auth');
-const {User} = require("./models/User");
+const config = require('config/key');
+const {auth} = require('middleware/auth');
+const {User} = require("models/User");
 const fs = require('fs');
 
 //application/x-www-form-urlencoded
@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 //application/json
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(express.static('/views'));
 
 const mongoose = require('mongoose');
 const req = require('express/lib/request');
@@ -50,21 +51,17 @@ app.get('/api/my/color', auth, (req,res) => {
       if(err) return res.status(400).send({error: "퍼스널 컬러 오류"})
       var color = req.user.color;
 
-      if(color == "봄 웜 라이트") {image = "./views/퍼스널컬러진단/봄웜라이트.jpg"}
-      else if(color == "봄 웜 브라이트") {image = "views/퍼스널컬러진단/봄웜브라이트.jpg"}
-      else if(color == "여름 쿨 라이트") {image = "views/퍼스널컬러진단/여름쿨라이트.jpg"}
-      else if(color == "여름 쿨 뮤트") {image = "views/퍼스널컬러진단/여름쿨뮤트.jpg"}
-      else if(color == "가을 웜 뮤트") {image = "views/퍼스널컬러진단/가을웜뮤트.jpg"}
-      else if(color == "가을 웜 딥") {image = "views/퍼스널컬러진단/가을웜딥.jpg"}
-      else if(color == "겨울 쿨 브라이트") {image = "views/퍼스널컬러진단/겨울쿨브라이트.jpg"}
-      else if(color == "겨울 쿨 딥") {image = "views/퍼스널컬러진단/겨울쿨딥.jpg"}
+      if(color == "봄 웜 라이트") {image = "퍼스널컬러진단/봄웜라이트.jpg"}
+      else if(color == "봄 웜 브라이트") {image = "퍼스널컬러진단/봄웜브라이트.jpg"}
+      else if(color == "여름 쿨 라이트") {image = "퍼스널컬러진단/여름쿨라이트.jpg"}
+      else if(color == "여름 쿨 뮤트") {image = "퍼스널컬러진단/여름쿨뮤트.jpg"}
+      else if(color == "가을 웜 뮤트") {image = "퍼스널컬러진단/가을웜뮤트.jpg"}
+      else if(color == "가을 웜 딥") {image = "퍼스널컬러진단/가을웜딥.jpg"}
+      else if(color == "겨울 쿨 브라이트") {image = "퍼스널컬러진단/겨울쿨브라이트.jpg"}
+      else if(color == "겨울 쿨 딥") {image = "퍼스널컬러진단/겨울쿨딥.jpg"}
       else {return res.status(400).send({error: "컬러 입력 잘못 됨"})}
-      //res.end(fs.readFileSync(__dirname) +'\\index')
-      fs.readFile(image, (err,data) =>{
-        res.writeHead(200, {'content-type': 'text/html'})
-        res.end(data);
-      })
-      //return res.status(200).send({image});
+
+      return res.status(200).send({image});
     }
   )  
 })
@@ -262,77 +259,77 @@ app.post('/api/main/weather', auth, (req, res) => {
       //겨울
       if(weather <= 8) {
           //스타일
-          if(style == "romantic") {image = './views/여자코디/겨울/여자겨울로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = './views/여자코디/겨울/여자겨울빈티지' + num +'.jpg';}
-          else if(style == "campus") {image = './views/여자코디/겨울/여자겨울캠퍼스' + num +'.jpg';}
-          else if(style == "office") {image = './views/여자코디/겨울/여자겨울오피스' + num +'.jpg';}
+          if(style == "romantic") {image = '여자코디/겨울/여자겨울로맨틱' + num +'.jpg';}
+          else if(style == "basic") {image = '여자코디/겨울/여자겨울빈티지' + num +'.jpg';}
+          else if(style == "campus") {image = '여자코디/겨울/여자겨울캠퍼스' + num +'.jpg';}
+          else if(style == "office") {image = '여자코디/겨울/여자겨울오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //가을
       else if( 9<=weather && weather < 16) {
-          if(style == "romantic") {image = './views/여자코디/가을/여자가을로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = './views/여자코디/가을/여자가을베이직' + num +'.jpg';}
-          else if(style == "campus") {image = './views/여자코디/가을/여자가을캠퍼스' + num +'.jpg';}
-          else if(style == "office") {image = './views/여자코디/가을/여자가을오피스' + num +'.jpg';}
+          if(style == "romantic") {image = '여자코디/가을/여자가을로맨틱' + num +'.jpg';}
+          else if(style == "basic") {image = '여자코디/가을/여자가을베이직' + num +'.jpg';}
+          else if(style == "campus") {image = '여자코디/가을/여자가을캠퍼스' + num +'.jpg';}
+          else if(style == "office") {image = '여자코디/가을/여자가을오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //여름
       else if(23<=weather) { 
-          if(style == "romantic") {image = './views/여자코디/여름/여자여름로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = './views/여자코디/여름/여자여름베이직' + num +'.jpg';}
-          else if(style == "campus") {image = './views/여자코디/여름/여자여름캠퍼스' + num +'.jpg';}
-          else if(style == "office") {image = './views/여자코디/여름/여자여름오피스' + num +'.jpg';}
+          if(style == "romantic") {image = '여자코디/여름/여자여름로맨틱' + num +'.jpg';}
+          else if(style == "basic") {image = '여자코디/여름/여자여름베이직' + num +'.jpg';}
+          else if(style == "campus") {image = '여자코디/여름/여자여름캠퍼스' + num +'.jpg';}
+          else if(style == "office") {image = '여자코디/여름/여자여름오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //봄
       else if( 16<=weather && weather <23) { 
-          if(style == "romantic") {image = './views/여자코디/봄/여자봄로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = './views/여자코디/봄/여자봄베이직' + num +'.jpg';}
-          else if(style == "campus") {image = './views/여자코디/봄/여자봄캠퍼스' + num +'.jpg';}
-          else if(style == "office") {image = './views/여자코디/봄/여자봄오피스' + num +'.jpg';}
+          if(style == "romantic") {image = '여자코디/봄/여자봄로맨틱' + num +'.jpg';}
+          else if(style == "basic") {image = '여자코디/봄/여자봄베이직' + num +'.jpg';}
+          else if(style == "campus") {image = '여자코디/봄/여자봄캠퍼스' + num +'.jpg';}
+          else if(style == "office") {image = '여자코디/봄/여자봄오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
+      else return res.status(400).send({error: "날씨 오류"})
+
       return res.status(200).send({image});
     }
     else if(gender =="남") {
       //겨울
       if(weather <= 8) {
           //스타일
-          if(style == "formal") {image = './views/남자코디/겨울/남자겨울포멀' + num +'.jpg';}
-          else if(style == "basic") { image = './views/남자코디/겨울/남자겨울베이직' + num +'.jpg';}
-          else if(style == "campus") {image = './views/남자코디/겨울/남자겨울캠퍼스' + num +'.jpg';}
-          else if(style == "sports") {image = './views/남자코디/겨울/남자겨울스포츠' + num +'.jpg';}
+          if(style == "formal") {image = '남자코디/겨울/남자겨울포멀' + num +'.jpg';}
+          else if(style == "basic") { image = '남자코디/겨울/남자겨울베이직' + num +'.jpg';}
+          else if(style == "campus") {image = '남자코디/겨울/남자겨울캠퍼스' + num +'.jpg';}
+          else if(style == "sports") {image = '남자코디/겨울/남자겨울스포츠' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //가을
       else if( 9<=weather && weather < 16) {
-          if(style == "formal") {image = './views/남자코디/가을/남자가을포멀' + num +'.jpg';}
-          else if(style == "basic") { image = './views/남자코디/가을/남자가을베이직' + num +'.jpg';}
-          else if(style == "campus") {image = './views/남자코디/가을/남자가을캠퍼스' + num +'.jpg';}
-          else if(style == "sports") {image = './views/남자코디/가을/남자가을스포츠' + num +'.jpg';}
+          if(style == "formal") {image = '남자코디/가을/남자가을포멀' + num +'.jpg';}
+          else if(style == "basic") { image = '남자코디/가을/남자가을베이직' + num +'.jpg';}
+          else if(style == "campus") {image = '남자코디/가을/남자가을캠퍼스' + num +'.jpg';}
+          else if(style == "sports") {image = '남자코디/가을/남자가을스포츠' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //여름
       else if(23<=weather) { 
-          if(style == "formal") {image = './views/남자코디/여름/남자여름포멀' + num +'.jpg';}
-          else if(style == "basic") {image = './views/남자코디/여름/남자여름베이직' + num +'.jpg';}
-          else if(style == "campus") {image = './views/남자코디/여름/남자여름캠퍼스' + num +'.jpg';}
-          else if(style == "sports") {image = './views/남자코디/여름/남자여름스포츠' + num +'.jpg';}
+          if(style == "formal") {image = '남자코디/여름/남자여름포멀' + num +'.jpg';}
+          else if(style == "basic") {image = '남자코디/여름/남자여름베이직' + num +'.jpg';}
+          else if(style == "campus") {image = '남자코디/여름/남자여름캠퍼스' + num +'.jpg';}
+          else if(style == "sports") {image = '남자코디/여름/남자여름스포츠' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
       //봄
       else if( 16<=weather && weather <23) {
-          if(style == "formal") {image = './views/남자코디/봄/남자봄포멀' + num +'.jpg';}
-          else if(style == "basic") {image = './views/남자코디/봄/남자봄베이직' + num +'.jpg';}
-          else if(style == "campus") {image = './views/남자코디/봄/남자봄캠퍼스' + num +'.jpg';}
-          else if(style == "sports") {image = './views/남자코디/봄/남자봄스포츠' + num +'.jpg';}
+          if(style == "formal") {image = '남자코디/봄/남자봄포멀' + num +'.jpg';}
+          else if(style == "basic") {image = '남자코디/봄/남자봄베이직' + num +'.jpg';}
+          else if(style == "campus") {image = '남자코디/봄/남자봄캠퍼스' + num +'.jpg';}
+          else if(style == "sports") {image = '남자코디/봄/남자봄스포츠' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
       }
-      fs.readFile(image, (err,data) =>{
-        res.writeHead(200, {'content-type': 'text/html'})
-        res.end(data);
-      })
-      //return res.status(200).send({image});
+      else return res.status(400).send({error: "날씨 오류"})
+
+      return res.status(200).send({image});
     }
     else {
       return res.status(400).send({error : "성별 오류"});
@@ -365,48 +362,48 @@ app.post('/api/main/tpo', auth, (req, res) => {
       if (nowMonth == 12 || nowMonth == 1 ||nowMonth == 2) {
         if(people == "친구") { // People
           //occasion
-          if(occasion == "경사") {image = 'views/여자코디/TPO/겨울친구경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/겨울친구데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/겨울친구여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/겨울친구운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/겨울친구직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/겨울친구데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/겨울친구경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/겨울친구데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/겨울친구여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/겨울친구운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/겨울친구직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/겨울친구데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="가족") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/겨울가족경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/겨울가족데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/겨울가족여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/겨울가족운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/겨울가족직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/겨울가족데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/겨울가족경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/겨울가족데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/겨울가족여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/겨울가족운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/겨울가족직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/겨울가족데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="연인") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/겨울연인경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/겨울연인데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/겨울연인여행' + num +'.jpg';}    
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/겨울연인운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/겨울연인직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/겨울연인데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/겨울연인경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/겨울연인데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/겨울연인여행' + num +'.jpg';}    
+          else if(occasion == "운동") {image = '여자코디/TPO/겨울연인운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/겨울연인직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/겨울연인데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="직장") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/겨울직장경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/겨울직장데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/겨울직장여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/겨울직장운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/겨울직장직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/겨울직장데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/겨울직장경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/겨울직장데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/겨울직장여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/겨울직장운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/겨울직장직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/겨울직장데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="처음 보는 사람") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/겨울처음경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/겨울처음데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/겨울처음여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/겨울처음운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/겨울처음직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/겨울처음데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/겨울처음경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/겨울처음데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/겨울처음여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/겨울처음운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/겨울처음직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/겨울처음데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else return res.status(400).send({error: "people 오류"})
@@ -417,48 +414,48 @@ app.post('/api/main/tpo', auth, (req, res) => {
       else if(nowMonth == 3 || nowMonth == 4 || nowMonth ==5) {
         if(people == "친구") { // People
           //occasion
-          if(occasion == "경사") {image = 'views/여자코디/TPO/봄친구경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/봄친구데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/봄친구여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/봄친구운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/봄친구직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/봄친구데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/봄친구경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/봄친구데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/봄친구여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/봄친구운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/봄친구직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/봄친구데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="가족") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/봄가족경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/봄가족데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/봄가족여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/봄가족운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/봄가족직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/봄가족데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/봄가족경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/봄가족데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/봄가족여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/봄가족운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/봄가족직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/봄가족데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="연인") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/봄연인경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/봄연인데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/봄연인여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/봄연인운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/봄연인직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/봄연인데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/봄연인경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/봄연인데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/봄연인여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/봄연인운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/봄연인직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/봄연인데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="직장") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/봄직장경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/봄직장데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/봄직장여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/봄직장운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/봄직장직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/봄직장데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/봄직장경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/봄직장데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/봄직장여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/봄직장운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/봄직장직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/봄직장데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="처음 보는 사람") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/봄처음경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/봄처음데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/봄처음여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/봄처음운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/봄처음직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/봄처음데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/봄처음경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/봄처음데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/봄처음여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/봄처음운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/봄처음직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/봄처음데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else return res.status(400).send({error: "people 오류"})
@@ -469,48 +466,48 @@ app.post('/api/main/tpo', auth, (req, res) => {
       else if(nowMonth == 6 || nowMonth == 7 || nowMonth ==8) {
         if(people == "친구") { // People
           //occasion
-          if(occasion == "경사") {image = 'views/여자코디/TPO/여름친구경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/여름친구데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/여름친구여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/여름친구운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/여름친구직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/여름친구데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/여름친구경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/여름친구데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/여름친구여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/여름친구운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/여름친구직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/여름친구데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="가족") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/여름가족경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/여름가족데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/여름가족여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/여름가족운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/여름가족직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/여름가족데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/여름가족경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/여름가족데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/여름가족여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/여름가족운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/여름가족직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/여름가족데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="연인") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/여름연인경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/여름연인데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/여름연인여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/여름연인운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/여름연인직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/여름연인데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/여름연인경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/여름연인데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/여름연인여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/여름연인운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/여름연인직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/여름연인데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="직장") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/여름직장경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/여름직장데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/여름직장여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/여름직장운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/여름직장직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/여름직장데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/여름직장경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/여름직장데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/여름직장여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/여름직장운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/여름직장직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/여름직장데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="처음 보는 사람") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/여름처음경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/여름처음데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/여름처음여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/여름처음운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/여름처음직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/여름처음데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/여름처음경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/여름처음데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/여름처음여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/여름처음운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/여름처음직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/여름처음데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else return res.status(400).send({error: "people 오류"})
@@ -521,48 +518,48 @@ app.post('/api/main/tpo', auth, (req, res) => {
       else if(nowMonth == 9 || nowMonth == 10 || nowMonth == 11) {
         if(people == "친구") { // People
           //occasion
-          if(occasion == "경사") {image = 'views/여자코디/TPO/가을친구경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/가을친구데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/가을친구여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/가을친구운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/가을친구직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/가을친구데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/가을친구경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/가을친구데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/가을친구여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/가을친구운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/가을친구직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/가을친구데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="가족") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/가을가족경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/가을가족데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/가을가족여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/가을가족운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/가을가족직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/가을가족데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/가을가족경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/가을가족데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/가을가족여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/가을가족운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/가을가족직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/가을가족데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="연인") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/가을연인경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/가을연인데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/가을연인여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/가을연인운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/가을연인직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/가을연인데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/가을연인경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/가을연인데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/가을연인여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/가을연인운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/가을연인직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/가을연인데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="직장") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/가을직장경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/가을직장데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/가을직장여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/가을직장운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/가을직장직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/가을직장데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/가을직장경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/가을직장데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/가을직장여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/가을직장운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/가을직장직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/가을직장데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="처음 보는 사람") { // People
-          if(occasion == "경사") {image = 'views/여자코디/TPO/가을처음경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/여자코디/TPO/가을처음데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/여자코디/TPO/가을처음여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/여자코디/TPO/가을처음운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/여자코디/TPO/가을처음직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/여자코디/TPO/가을처음데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '여자코디/TPO/가을처음경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '여자코디/TPO/가을처음데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '여자코디/TPO/가을처음여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '여자코디/TPO/가을처음운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '여자코디/TPO/가을처음직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '여자코디/TPO/가을처음데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else return res.status(400).send({error: "people 오류"})
@@ -578,48 +575,48 @@ app.post('/api/main/tpo', auth, (req, res) => {
       if (nowMonth == 12 || nowMonth == 1 ||nowMonth == 2) {
         if(people == "친구") { // People
           //occasion
-          if(occasion == "경사") {image = 'views/남자코디/TPO/겨울친구경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/겨울친구데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/겨울친구여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/겨울친구운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/겨울친구직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/겨울친구데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/겨울친구경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/겨울친구데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/겨울친구여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/겨울친구운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/겨울친구직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/겨울친구데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="가족") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/겨울가족경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/겨울가족데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/겨울가족여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/겨울가족운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/겨울가족직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/겨울가족데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/겨울가족경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/겨울가족데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/겨울가족여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/겨울가족운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/겨울가족직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/겨울가족데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="연인") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/겨울연인경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/겨울연인데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/겨울연인여행' + num +'.jpg';}    
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/겨울연인운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/겨울연인직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/겨울연인데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/겨울연인경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/겨울연인데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/겨울연인여행' + num +'.jpg';}    
+          else if(occasion == "운동") {image = '남자코디/TPO/겨울연인운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/겨울연인직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/겨울연인데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="직장") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/겨울직장경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/겨울직장데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/겨울직장여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/겨울직장운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/겨울직장직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/겨울직장데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/겨울직장경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/겨울직장데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/겨울직장여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/겨울직장운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/겨울직장직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/겨울직장데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="처음 보는 사람") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/겨울처음경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/겨울처음데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/겨울처음여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/겨울처음운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/겨울처음직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/겨울처음데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/겨울처음경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/겨울처음데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/겨울처음여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/겨울처음운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/겨울처음직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/겨울처음데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else return res.status(400).send({error: "people 오류"})
@@ -630,48 +627,48 @@ app.post('/api/main/tpo', auth, (req, res) => {
       else if(nowMonth == 3 || nowMonth == 4 || nowMonth ==5) {
         if(people == "친구") { // People
           //occasion
-          if(occasion == "경사") {image = 'views/남자코디/TPO/봄친구경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/봄친구데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/봄친구여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/봄친구운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/봄친구직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/봄친구데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/봄친구경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/봄친구데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/봄친구여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/봄친구운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/봄친구직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/봄친구데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="가족") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/봄가족경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/봄가족데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/봄가족여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/봄가족운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/봄가족직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/봄가족데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/봄가족경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/봄가족데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/봄가족여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/봄가족운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/봄가족직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/봄가족데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="연인") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/봄연인경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/봄연인데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/봄연인여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/봄연인운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/봄연인직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/봄연인데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/봄연인경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/봄연인데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/봄연인여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/봄연인운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/봄연인직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/봄연인데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="직장") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/봄직장경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/봄직장데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/봄직장여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/봄직장운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/봄직장직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/봄직장데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/봄직장경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/봄직장데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/봄직장여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/봄직장운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/봄직장직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/봄직장데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="처음 보는 사람") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/봄처음경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/봄처음데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/봄처음여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/봄처음운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/봄처음직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/봄처음데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/봄처음경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/봄처음데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/봄처음여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/봄처음운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/봄처음직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/봄처음데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else return res.status(400).send({error: "people 오류"})
@@ -682,48 +679,48 @@ app.post('/api/main/tpo', auth, (req, res) => {
       else if(nowMonth == 6 || nowMonth == 7 || nowMonth ==8) {
         if(people == "친구") { // People
           //occasion
-          if(occasion == "경사") {image = 'views/남자코디/TPO/여름친구경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/여름친구데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/여름친구여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/여름친구운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/여름친구직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/여름친구데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/여름친구경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/여름친구데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/여름친구여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/여름친구운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/여름친구직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/여름친구데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="가족") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/여름가족경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/여름가족데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/여름가족여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/여름가족운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/여름가족직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/여름가족데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/여름가족경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/여름가족데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/여름가족여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/여름가족운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/여름가족직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/여름가족데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="연인") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/여름연인경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/여름연인데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/여름연인여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/여름연인운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/여름연인직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/여름연인데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/여름연인경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/여름연인데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/여름연인여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/여름연인운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/여름연인직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/여름연인데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="직장") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/여름직장경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/여름직장데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/여름직장여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/여름직장운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/여름직장직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/여름직장데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/여름직장경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/여름직장데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/여름직장여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/여름직장운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/여름직장직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/여름직장데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="처음 보는 사람") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/여름처음경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/여름처음데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/여름처음여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/여름처음운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/여름처음직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/여름처음데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/여름처음경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/여름처음데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/여름처음여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/여름처음운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/여름처음직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/여름처음데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else return res.status(400).send({error: "people 오류"})
@@ -734,48 +731,48 @@ app.post('/api/main/tpo', auth, (req, res) => {
       else if(nowMonth == 9 || nowMonth == 10 || nowMonth == 11) {
         if(people == "친구") { // People
           //occasion
-          if(occasion == "경사") {image = 'views/남자코디/TPO/가을친구경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/가을친구데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/가을친구여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/가을친구운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/가을친구직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/가을친구데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/가을친구경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/가을친구데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/가을친구여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/가을친구운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/가을친구직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/가을친구데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="가족") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/가을가족경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/가을가족데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/가을가족여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/가을가족운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/가을가족직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/가을가족데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/가을가족경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/가을가족데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/가을가족여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/가을가족운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/가을가족직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/가을가족데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="연인") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/가을연인경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/가을연인데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/가을연인여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/가을연인운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/가을연인직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/가을연인데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/가을연인경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/가을연인데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/가을연인여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/가을연인운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/가을연인직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/가을연인데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="직장") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/가을직장경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/가을직장데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/가을직장여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/가을직장운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/가을직장직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/가을직장데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/가을직장경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/가을직장데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/가을직장여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/가을직장운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/가을직장직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/가을직장데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else if(people =="처음 보는 사람") { // People
-          if(occasion == "경사") {image = 'views/남자코디/TPO/가을처음경사' + num +'.jpg';}
-          else if(occasion == "데이트") {image = 'views/남자코디/TPO/가을처음데이트' + num +'.jpg';}
-          else if(occasion == "여행") {image = 'views/남자코디/TPO/가을처음여행' + num +'.jpg';}
-          else if(occasion == "운동") {image = 'views/남자코디/TPO/가을처음운동' + num +'.jpg';}
-          else if(occasion == "직장") {image = 'views/남자코디/TPO/가을처음직장' + num +'.jpg';}
-          else if(occasion == "데일리") {image = 'views/남자코디/TPO/가을처음데일리' + num +'.jpg';}
+          if(occasion == "경사") {image = '남자코디/TPO/가을처음경사' + num +'.jpg';}
+          else if(occasion == "데이트") {image = '남자코디/TPO/가을처음데이트' + num +'.jpg';}
+          else if(occasion == "여행") {image = '남자코디/TPO/가을처음여행' + num +'.jpg';}
+          else if(occasion == "운동") {image = '남자코디/TPO/가을처음운동' + num +'.jpg';}
+          else if(occasion == "직장") {image = '남자코디/TPO/가을처음직장' + num +'.jpg';}
+          else if(occasion == "데일리") {image = '남자코디/TPO/가을처음데일리' + num +'.jpg';}
           else return res.status(400).send({error : "occasion 오류"})
         }
         else return res.status(400).send({error: "people 오류"})
@@ -808,53 +805,53 @@ app.get('/api/main/personal', auth, (req,res) => {
     {
       //겨울
       if(nowMonth == 12 || nowMonth == 1 ||nowMonth == 2) {
-        if(color == "봄 웜 라이트") {image = 'views/여자코디/퍼스널컬러/겨울봄웜라이트' + num +'.jpg'}
-        else if(color == "봄 웜 브라이트") {image = 'views/여자코디/퍼스널컬러/겨울봄웜브라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 라이트") {image = 'views/여자코디/퍼스널컬러/겨울여름쿨라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 뮤트") {image = 'views/여자코디/퍼스널컬러/겨울여름쿨뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 뮤트") {image = 'views/여자코디/퍼스널컬러/겨울가을웜뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 딥") {image = 'views/여자코디/퍼스널컬러/겨울가을웜딥' + num +'.jpg'}
-        else if(color == "겨울 쿨 브라이트") {image = 'views/여자코디/퍼스널컬러/겨울겨울쿨브라이트' + num +'.jpg'}
-        else if(color == "겨울 쿨 딥") {image = 'views/여자코디/퍼스널컬러/겨울겨울쿨딥' + num +'.jpg'}
+        if(color == "봄 웜 라이트") {image = '여자코디/퍼스널컬러/겨울봄웜라이트' + num +'.jpg'}
+        else if(color == "봄 웜 브라이트") {image = '여자코디/퍼스널컬러/겨울봄웜브라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 라이트") {image = '여자코디/퍼스널컬러/겨울여름쿨라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 뮤트") {image = '여자코디/퍼스널컬러/겨울여름쿨뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 뮤트") {image = '여자코디/퍼스널컬러/겨울가을웜뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 딥") {image = '여자코디/퍼스널컬러/겨울가을웜딥' + num +'.jpg'}
+        else if(color == "겨울 쿨 브라이트") {image = '여자코디/퍼스널컬러/겨울겨울쿨브라이트' + num +'.jpg'}
+        else if(color == "겨울 쿨 딥") {image = '여자코디/퍼스널컬러/겨울겨울쿨딥' + num +'.jpg'}
         else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
         return res.status(200).send({image});
       }
       //봄
       else if(nowMonth == 3 || nowMonth ==4 || nowMonth ==5) {
-        if(color == "봄 웜 라이트") {image = 'views/여자코디/퍼스널컬러/봄봄웜라이트' + num +'.jpg'}
-        else if(color == "봄 웜 브라이트") {image = 'views/여자코디/퍼스널컬러/봄봄웜브라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 라이트") {image = 'views/여자코디/퍼스널컬러/봄여름쿨라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 뮤트") {image = 'views/여자코디/퍼스널컬러/봄여름쿨뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 뮤트") {image = 'views/여자코디/퍼스널컬러/봄가을웜뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 딥") {image = 'views/여자코디/퍼스널컬러/봄가을웜딥' + num +'.jpg'}
-        else if(color == "겨울 쿨 브라이트") {image = 'views/여자코디/퍼스널컬러/봄겨울쿨브라이트' + num +'.jpg'}
-        else if(color == "겨울 쿨 딥") {image = 'views/여자코디/퍼스널컬러/봄겨울쿨딥' + num +'.jpg'}
+        if(color == "봄 웜 라이트") {image = '여자코디/퍼스널컬러/봄봄웜라이트' + num +'.jpg'}
+        else if(color == "봄 웜 브라이트") {image = '여자코디/퍼스널컬러/봄봄웜브라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 라이트") {image = '여자코디/퍼스널컬러/봄여름쿨라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 뮤트") {image = '여자코디/퍼스널컬러/봄여름쿨뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 뮤트") {image = '여자코디/퍼스널컬러/봄가을웜뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 딥") {image = '여자코디/퍼스널컬러/봄가을웜딥' + num +'.jpg'}
+        else if(color == "겨울 쿨 브라이트") {image = '여자코디/퍼스널컬러/봄겨울쿨브라이트' + num +'.jpg'}
+        else if(color == "겨울 쿨 딥") {image = '여자코디/퍼스널컬러/봄겨울쿨딥' + num +'.jpg'}
         else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
         return res.status(200).send({image});
       }
       //여름
       else if (nowMonth == 6 || nowMonth == 7 || nowMonth ==8) {
-        if(color == "봄 웜 라이트") {image = 'views/여자코디/퍼스널컬러/여름봄웜라이트' + num +'.jpg'}
-        else if(color == "봄 웜 브라이트") {image = 'views/여자코디/퍼스널컬러/여름봄웜브라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 라이트") {image = 'views/여자코디/퍼스널컬러/여름여름쿨라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 뮤트") {image = 'views/여자코디/퍼스널컬러/여름여름쿨뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 뮤트") {image = 'views/여자코디/퍼스널컬러/여름가을웜뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 딥") {image = 'views/여자코디/퍼스널컬러/여름가을웜딥' + num +'.jpg'}
-        else if(color == "겨울 쿨 브라이트") {image = 'views/여자코디/퍼스널컬러/여름겨울쿨브라이트' + num +'.jpg'}
-        else if(color == "겨울 쿨 딥") {image = 'views/여자코디/퍼스널컬러/여름겨울쿨딥' + num +'.jpg'}
+        if(color == "봄 웜 라이트") {image = '여자코디/퍼스널컬러/여름봄웜라이트' + num +'.jpg'}
+        else if(color == "봄 웜 브라이트") {image = '여자코디/퍼스널컬러/여름봄웜브라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 라이트") {image = '여자코디/퍼스널컬러/여름여름쿨라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 뮤트") {image = '여자코디/퍼스널컬러/여름여름쿨뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 뮤트") {image = '여자코디/퍼스널컬러/여름가을웜뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 딥") {image = '여자코디/퍼스널컬러/여름가을웜딥' + num +'.jpg'}
+        else if(color == "겨울 쿨 브라이트") {image = '여자코디/퍼스널컬러/여름겨울쿨브라이트' + num +'.jpg'}
+        else if(color == "겨울 쿨 딥") {image = '여자코디/퍼스널컬러/여름겨울쿨딥' + num +'.jpg'}
         else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
         return res.status(200).send({image});
       }
       //가을
       else if (nowMonth == 9|| nowMonth == 10 || nowMonth == 11) {
-        if(color == "봄 웜 라이트") {image = 'views/여자코디/퍼스널컬러/가을봄웜라이트' + num +'.jpg'}
-        else if(color == "봄 웜 브라이트") {image = 'views/여자코디/퍼스널컬러/가을봄웜브라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 라이트") {image = 'views/여자코디/퍼스널컬러/가을여름쿨라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 뮤트") {image = 'views/여자코디/퍼스널컬러/가을여름쿨뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 뮤트") {image = 'views/여자코디/퍼스널컬러/가을가을웜뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 딥") {image = 'views/여자코디/퍼스널컬러/가을가을웜딥' + num +'.jpg'}
-        else if(color == "겨울 쿨 브라이트") {image = 'views/여자코디/퍼스널컬러/가을겨울쿨브라이트' + num +'.jpg'}
-        else if(color == "겨울 쿨 딥") {image = 'views/여자코디/퍼스널컬러/가을겨울쿨딥' + num +'.jpg'}
+        if(color == "봄 웜 라이트") {image = '여자코디/퍼스널컬러/가을봄웜라이트' + num +'.jpg'}
+        else if(color == "봄 웜 브라이트") {image = '여자코디/퍼스널컬러/가을봄웜브라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 라이트") {image = '여자코디/퍼스널컬러/가을여름쿨라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 뮤트") {image = '여자코디/퍼스널컬러/가을여름쿨뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 뮤트") {image = '여자코디/퍼스널컬러/가을가을웜뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 딥") {image = '여자코디/퍼스널컬러/가을가을웜딥' + num +'.jpg'}
+        else if(color == "겨울 쿨 브라이트") {image = '여자코디/퍼스널컬러/가을겨울쿨브라이트' + num +'.jpg'}
+        else if(color == "겨울 쿨 딥") {image = '여자코디/퍼스널컬러/가을겨울쿨딥' + num +'.jpg'}
         else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
         return res.status(200).send({image});
       }
@@ -865,53 +862,53 @@ app.get('/api/main/personal', auth, (req,res) => {
     {
       //겨울
       if(nowMonth == 12 || nowMonth == 1 ||nowMonth == 2) {
-        if(color == "봄 웜 라이트") {image = 'views/남자코디/퍼스널컬러/겨울봄웜라이트' + num +'.jpg'}
-        else if(color == "봄 웜 브라이트") {image = 'views/남자코디/퍼스널컬러/겨울봄웜브라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 라이트") {image = 'views/남자코디/퍼스널컬러/겨울여름쿨라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 뮤트") {image = 'views/남자코디/퍼스널컬러/겨울여름쿨뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 뮤트") {image = 'views/남자코디/퍼스널컬러/겨울가을웜뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 딥") {image = 'views/남자코디/퍼스널컬러/겨울가을웜딥' + num +'.jpg'}
-        else if(color == "겨울 쿨 브라이트") {image = 'views/남자코디/퍼스널컬러/겨울겨울쿨브라이트' + num +'.jpg'}
-        else if(color == "겨울 쿨 딥") {image = 'views/남자코디/퍼스널컬러/겨울겨울쿨딥' + num +'.jpg'}
+        if(color == "봄 웜 라이트") {image = '남자코디/퍼스널컬러/겨울봄웜라이트' + num +'.jpg'}
+        else if(color == "봄 웜 브라이트") {image = '남자코디/퍼스널컬러/겨울봄웜브라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 라이트") {image = '남자코디/퍼스널컬러/겨울여름쿨라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 뮤트") {image = '남자코디/퍼스널컬러/겨울여름쿨뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 뮤트") {image = '남자코디/퍼스널컬러/겨울가을웜뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 딥") {image = '남자코디/퍼스널컬러/겨울가을웜딥' + num +'.jpg'}
+        else if(color == "겨울 쿨 브라이트") {image = '남자코디/퍼스널컬러/겨울겨울쿨브라이트' + num +'.jpg'}
+        else if(color == "겨울 쿨 딥") {image = '남자코디/퍼스널컬러/겨울겨울쿨딥' + num +'.jpg'}
         else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
         return res.status(200).send({image});
       }
       //봄
       else if(nowMonth == 3 || nowMonth ==4 || nowMonth ==5) {
-        if(color == "봄 웜 라이트") {image = 'views/남자코디/퍼스널컬러/봄봄웜라이트' + num +'.jpg'}
-        else if(color == "봄 웜 브라이트") {image = 'views/남자코디/퍼스널컬러/봄봄웜브라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 라이트") {image = 'views/남자코디/퍼스널컬러/봄여름쿨라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 뮤트") {image = 'views/남자코디/퍼스널컬러/봄여름쿨뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 뮤트") {image = 'views/남자코디/퍼스널컬러/봄가을웜뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 딥") {image = 'views/남자코디/퍼스널컬러/봄가을웜딥' + num +'.jpg'}
-        else if(color == "겨울 쿨 브라이트") {image = 'views/남자코디/퍼스널컬러/봄겨울쿨브라이트' + num +'.jpg'}
-        else if(color == "겨울 쿨 딥") {image = 'views/남자코디/퍼스널컬러/봄겨울쿨딥' + num +'.jpg'}
+        if(color == "봄 웜 라이트") {image = '남자코디/퍼스널컬러/봄봄웜라이트' + num +'.jpg'}
+        else if(color == "봄 웜 브라이트") {image = '남자코디/퍼스널컬러/봄봄웜브라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 라이트") {image = '남자코디/퍼스널컬러/봄여름쿨라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 뮤트") {image = '남자코디/퍼스널컬러/봄여름쿨뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 뮤트") {image = '남자코디/퍼스널컬러/봄가을웜뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 딥") {image = '남자코디/퍼스널컬러/봄가을웜딥' + num +'.jpg'}
+        else if(color == "겨울 쿨 브라이트") {image = '남자코디/퍼스널컬러/봄겨울쿨브라이트' + num +'.jpg'}
+        else if(color == "겨울 쿨 딥") {image = '남자코디/퍼스널컬러/봄겨울쿨딥' + num +'.jpg'}
         else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
         return res.status(200).send({image});
       }
       //여름
       else if (nowMonth == 6 || nowMonth == 7 || nowMonth ==8) {
-        if(color == "봄 웜 라이트") {image = 'views/남자코디/퍼스널컬러/여름봄웜라이트' + num +'.jpg'}
-        else if(color == "봄 웜 브라이트") {image = 'views/남자코디/퍼스널컬러/여름봄웜브라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 라이트") {image = 'views/남자코디/퍼스널컬러/여름여름쿨라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 뮤트") {image = 'views/남자코디/퍼스널컬러/여름여름쿨뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 뮤트") {image = 'views/남자코디/퍼스널컬러/여름가을웜뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 딥") {image = 'views/남자코디/퍼스널컬러/여름가을웜딥' + num +'.jpg'}
-        else if(color == "겨울 쿨 브라이트") {image = 'views/남자코디/퍼스널컬러/여름겨울쿨브라이트' + num +'.jpg'}
-        else if(color == "겨울 쿨 딥") {image = 'views/남자코디/퍼스널컬러/여름겨울쿨딥' + num +'.jpg'}
+        if(color == "봄 웜 라이트") {image = '남자코디/퍼스널컬러/여름봄웜라이트' + num +'.jpg'}
+        else if(color == "봄 웜 브라이트") {image = '남자코디/퍼스널컬러/여름봄웜브라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 라이트") {image = '남자코디/퍼스널컬러/여름여름쿨라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 뮤트") {image = '남자코디/퍼스널컬러/여름여름쿨뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 뮤트") {image = '남자코디/퍼스널컬러/여름가을웜뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 딥") {image = '남자코디/퍼스널컬러/여름가을웜딥' + num +'.jpg'}
+        else if(color == "겨울 쿨 브라이트") {image = '남자코디/퍼스널컬러/여름겨울쿨브라이트' + num +'.jpg'}
+        else if(color == "겨울 쿨 딥") {image = '남자코디/퍼스널컬러/여름겨울쿨딥' + num +'.jpg'}
         else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
         return res.status(200).send({image});
       }
       //가을
       else if (nowMonth == 9|| nowMonth == 10 || nowMonth == 11) {
-        if(color == "봄 웜 라이트") {image = 'views/남자코디/퍼스널컬러/가을봄웜라이트' + num +'.jpg'}
-        else if(color == "봄 웜 브라이트") {image = 'views/남자코디/퍼스널컬러/가을봄웜브라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 라이트") {image = 'views/남자코디/퍼스널컬러/가을여름쿨라이트' + num +'.jpg'}
-        else if(color == "여름 쿨 뮤트") {image = 'views/남자코디/퍼스널컬러/가을여름쿨뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 뮤트") {image = 'views/남자코디/퍼스널컬러/가을가을웜뮤트' + num +'.jpg'}
-        else if(color == "가을 웜 딥") {image = 'views/남자코디/퍼스널컬러/가을가을웜딥' + num +'.jpg'}
-        else if(color == "겨울 쿨 브라이트") {image = 'views/남자코디/퍼스널컬러/가을겨울쿨브라이트' + num +'.jpg'}
-        else if(color == "겨울 쿨 딥") {image = 'views/남자코디/퍼스널컬러/가을겨울쿨딥' + num +'.jpg'}
+        if(color == "봄 웜 라이트") {image = '남자코디/퍼스널컬러/가을봄웜라이트' + num +'.jpg'}
+        else if(color == "봄 웜 브라이트") {image = '남자코디/퍼스널컬러/가을봄웜브라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 라이트") {image = '남자코디/퍼스널컬러/가을여름쿨라이트' + num +'.jpg'}
+        else if(color == "여름 쿨 뮤트") {image = '남자코디/퍼스널컬러/가을여름쿨뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 뮤트") {image = '남자코디/퍼스널컬러/가을가을웜뮤트' + num +'.jpg'}
+        else if(color == "가을 웜 딥") {image = '남자코디/퍼스널컬러/가을가을웜딥' + num +'.jpg'}
+        else if(color == "겨울 쿨 브라이트") {image = '남자코디/퍼스널컬러/가을겨울쿨브라이트' + num +'.jpg'}
+        else if(color == "겨울 쿨 딥") {image = '남자코디/퍼스널컬러/가을겨울쿨딥' + num +'.jpg'}
         else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
         return res.status(200).send({image});
       }
@@ -931,14 +928,14 @@ app.post('/api/personal/diagnostic', auth, (req,res) => {
     {color: color},
     (err, user) => {
       if(err) return res.status(400).send({error: "퍼스널 컬러 오류"})
-      if(color == "봄 웜 라이트") {image = "views/퍼스널컬러진단/봄웜라이트.jpg"}
-      else if(color == "봄 웜 브라이트") {image = "views/퍼스널컬러진단/봄웜브라이트.jpg"}
-      else if(color == "여름 쿨 라이트") {image = "views/퍼스널컬러진단/여름쿨라이트.jpg"}
-      else if(color == "여름 쿨 뮤트") {image = "views/퍼스널컬러진단/여름쿨뮤트.jpg"}
-      else if(color == "가을 웜 뮤트") {image = "views/퍼스널컬러진단/가을웜뮤트.jpg"}
-      else if(color == "가을 웜 딥") {image = "views/퍼스널컬러진단/가을웜딥.jpg"}
-      else if(color == "겨울 쿨 브라이트") {image = "views/퍼스널컬러진단/겨울쿨브라이트.jpg"}
-      else if(color == "겨울 쿨 딥") {image = "views/퍼스널컬러진단/겨울쿨딥.jpg"}
+      if(color == "봄 웜 라이트") {image = "퍼스널컬러진단/봄웜라이트.jpg"}
+      else if(color == "봄 웜 브라이트") {image = "퍼스널컬러진단/봄웜브라이트.jpg"}
+      else if(color == "여름 쿨 라이트") {image = "퍼스널컬러진단/여름쿨라이트.jpg"}
+      else if(color == "여름 쿨 뮤트") {image = "퍼스널컬러진단/여름쿨뮤트.jpg"}
+      else if(color == "가을 웜 뮤트") {image = "퍼스널컬러진단/가을웜뮤트.jpg"}
+      else if(color == "가을 웜 딥") {image = "퍼스널컬러진단/가을웜딥.jpg"}
+      else if(color == "겨울 쿨 브라이트") {image = "퍼스널컬러진단/겨울쿨브라이트.jpg"}
+      else if(color == "겨울 쿨 딥") {image = "퍼스널컬러진단/겨울쿨딥.jpg"}
       else {return res.status(400).send({error: "컬러 입력 잘못 됨"})}
       return res.status(200).send({image});
     }
