@@ -58,7 +58,7 @@ app.get('/api/my/color', auth, (req,res) => {
       else if(color == "가을 웜 딥") {image = "퍼스널컬러진단/가을웜딥.jpg"}
       else if(color == "겨울 쿨 브라이트") {image = "퍼스널컬러진단/겨울쿨브라이트.jpg"}
       else if(color == "겨울 쿨 딥") {image = "퍼스널컬러진단/겨울쿨딥.jpg"}
-      else {return res.status(400).send({error: "컬러 입력 잘못 됨"})}
+      else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
 
       return res.status(200).send({image});
     }
@@ -812,7 +812,7 @@ app.get('/api/main/personal', auth, (req,res) => {
         else if(color == "가을 웜 딥") {image = '여자코디/퍼스널컬러/겨울가을웜딥' + num +'.jpg'}
         else if(color == "겨울 쿨 브라이트") {image = '여자코디/퍼스널컬러/겨울겨울쿨브라이트' + num +'.jpg'}
         else if(color == "겨울 쿨 딥") {image = '여자코디/퍼스널컬러/겨울겨울쿨딥' + num +'.jpg'}
-        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
         return res.status(200).send({image});
       }
       //봄
@@ -825,7 +825,7 @@ app.get('/api/main/personal', auth, (req,res) => {
         else if(color == "가을 웜 딥") {image = '여자코디/퍼스널컬러/봄가을웜딥' + num +'.jpg'}
         else if(color == "겨울 쿨 브라이트") {image = '여자코디/퍼스널컬러/봄겨울쿨브라이트' + num +'.jpg'}
         else if(color == "겨울 쿨 딥") {image = '여자코디/퍼스널컬러/봄겨울쿨딥' + num +'.jpg'}
-        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
         return res.status(200).send({image});
       }
       //여름
@@ -838,7 +838,7 @@ app.get('/api/main/personal', auth, (req,res) => {
         else if(color == "가을 웜 딥") {image = '여자코디/퍼스널컬러/여름가을웜딥' + num +'.jpg'}
         else if(color == "겨울 쿨 브라이트") {image = '여자코디/퍼스널컬러/여름겨울쿨브라이트' + num +'.jpg'}
         else if(color == "겨울 쿨 딥") {image = '여자코디/퍼스널컬러/여름겨울쿨딥' + num +'.jpg'}
-        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
         return res.status(200).send({image});
       }
       //가을
@@ -851,7 +851,7 @@ app.get('/api/main/personal', auth, (req,res) => {
         else if(color == "가을 웜 딥") {image = '여자코디/퍼스널컬러/가을가을웜딥' + num +'.jpg'}
         else if(color == "겨울 쿨 브라이트") {image = '여자코디/퍼스널컬러/가을겨울쿨브라이트' + num +'.jpg'}
         else if(color == "겨울 쿨 딥") {image = '여자코디/퍼스널컬러/가을겨울쿨딥' + num +'.jpg'}
-        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
         return res.status(200).send({image});
       }
       else return res.status(400).send({error: "날짜 오류"})
@@ -869,7 +869,7 @@ app.get('/api/main/personal', auth, (req,res) => {
         else if(color == "가을 웜 딥") {image = '남자코디/퍼스널컬러/겨울가을웜딥' + num +'.jpg'}
         else if(color == "겨울 쿨 브라이트") {image = '남자코디/퍼스널컬러/겨울겨울쿨브라이트' + num +'.jpg'}
         else if(color == "겨울 쿨 딥") {image = '남자코디/퍼스널컬러/겨울겨울쿨딥' + num +'.jpg'}
-        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
         return res.status(200).send({image});
       }
       //봄
@@ -882,7 +882,7 @@ app.get('/api/main/personal', auth, (req,res) => {
         else if(color == "가을 웜 딥") {image = '남자코디/퍼스널컬러/봄가을웜딥' + num +'.jpg'}
         else if(color == "겨울 쿨 브라이트") {image = '남자코디/퍼스널컬러/봄겨울쿨브라이트' + num +'.jpg'}
         else if(color == "겨울 쿨 딥") {image = '남자코디/퍼스널컬러/봄겨울쿨딥' + num +'.jpg'}
-        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
         return res.status(200).send({image});
       }
       //여름
@@ -895,7 +895,7 @@ app.get('/api/main/personal', auth, (req,res) => {
         else if(color == "가을 웜 딥") {image = '남자코디/퍼스널컬러/여름가을웜딥' + num +'.jpg'}
         else if(color == "겨울 쿨 브라이트") {image = '남자코디/퍼스널컬러/여름겨울쿨브라이트' + num +'.jpg'}
         else if(color == "겨울 쿨 딥") {image = '남자코디/퍼스널컬러/여름겨울쿨딥' + num +'.jpg'}
-        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
         return res.status(200).send({image});
       }
       //가을
@@ -908,7 +908,7 @@ app.get('/api/main/personal', auth, (req,res) => {
         else if(color == "가을 웜 딥") {image = '남자코디/퍼스널컬러/가을가을웜딥' + num +'.jpg'}
         else if(color == "겨울 쿨 브라이트") {image = '남자코디/퍼스널컬러/가을겨울쿨브라이트' + num +'.jpg'}
         else if(color == "겨울 쿨 딥") {image = '남자코디/퍼스널컬러/가을겨울쿨딥' + num +'.jpg'}
-        else {return res.status(400).send({error: "퍼스널 컬러 없음"})}
+        else {return res.status(200).send({message: "퍼스널 컬러 없습니다."})}
         return res.status(200).send({image});
       }
       else return res.status(400).send({error: "날짜 오류"})
