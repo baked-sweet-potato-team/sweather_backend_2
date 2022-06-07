@@ -259,7 +259,7 @@ app.post('/api/main/weather', auth, (req, res) => {
       if(weather <= 8) {
           //스타일
           if(style == "romantic") {image = '여자코디/겨울/여자겨울로맨틱' + num +'.jpg';}
-          else if(style == "basic") {image = '여자코디/겨울/여자겨울빈티지' + num +'.jpg';}
+          else if(style == "basic") {image = '여자코디/겨울/여자겨울베이직' + num +'.jpg';}
           else if(style == "campus") {image = '여자코디/겨울/여자겨울캠퍼스' + num +'.jpg';}
           else if(style == "office") {image = '여자코디/겨울/여자겨울오피스' + num +'.jpg';}
           else return res.status(400).send({error : "스타일 오류"})
